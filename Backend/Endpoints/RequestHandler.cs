@@ -13,13 +13,12 @@ namespace Stockr.Backend.Endpoints
             switch (request.RawUrl.ToLower())
             {
                 case "/login":
-                    response.Data = Events.User.SignIn(request.Headers);
-                    if (response.Data != null) response.StatusCode = 200;
+                    Events.User.SignIn(request.Headers,ref response);
                     break;
 
                 default:
                     response.StatusCode = 404;
-                    response.Data = "Page Not Found";
+                    response.AddToData("Error","Page Not Found");
                     break;
             }
         }

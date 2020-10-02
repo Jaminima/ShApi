@@ -55,6 +55,7 @@
     <Compile Include="Backend\Endpoints\Listener.cs" />
     <Compile Include="Backend\Events\User.cs" />
     <Compile Include="Backend\Security\Hashing.cs" />
+    <Compile Include="Backend\Security\LoginTokens.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

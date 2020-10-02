@@ -9,8 +9,17 @@ namespace Stockr.Backend.Endpoints
 {
     public class Response
     {
-        public object Data = null;
+        public JObject Data = JObject.Parse("{'Time':"+DateTime.Now.Ticks+"}");
         public int StatusCode = 500;
+
+        public void AddToData(string Header, object stringable)
+        {
+            Data.Property("Time").AddAfterSelf(new JProperty(Header, stringable.ToString()));
+        }
+        public void AddObjectToData(string Header, object obj)
+        {
+            Data.Property("Time").AddAfterSelf(new JProperty(Header, JToken.FromObject(obj).ToString()));
+        }
 
         public void Send(HttpListenerResponse response)
         {
