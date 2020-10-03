@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using Stockr.Backend.Data.Objects;
 using Stockr.Backend.Endpoints;
 using Stockr.Backend.Security;
 using System;
@@ -12,12 +13,35 @@ namespace Stockr.Backend.Events
 {
     public static class User
     {
+        public static bool SignUp(NameValueCollection Headers, ref Response response)
+        {
+            string uname = Headers["username"], pword = Headers["password"];
+            if (uname != null && pword != null)
+            {
+                if (Data.Objects.User.Find(uname) == null)
+                {
+                    Data.Objects.User user = new Data.Objects.User(uname, pword);
+                    Data.Objects.User.Users.Add(user);
+
+                    response.AddToData("AuthToken", LoginTokens.CreateToken(user));
+                    response.StatusCode = 200;
+                }
+                else
+                {
+                    response.AddToData("Error", "User already exists");
+                    response.StatusCode = 401;
+                }
+            }
+            else { response.StatusCode = 400; response.AddToData("Error", "username & password must be provided"); }
+            return false;
+        }
+
         public static bool SignIn(NameValueCollection Headers, ref Response response)
         {
             string uname = Headers["username"], pword = Headers["password"];
             if (uname != null && pword != null)
             {
-                Data.Objects.User user = Data.MemoryHandler.FindUser(uname);
+                Data.Objects.User user = Data.Objects.User.Find(uname);
                 if (user != null && Hashing.Match(user.hashPassword, pword))
                 {
                     response.AddToData("AuthToken",LoginTokens.CreateToken(user));

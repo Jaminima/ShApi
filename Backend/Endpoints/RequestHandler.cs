@@ -12,7 +12,11 @@ namespace Stockr.Backend.Endpoints
         {
             switch (request.RawUrl.ToLower())
             {
-                case "/login":
+                case "/signup" when request.HttpMethod == "POST":
+                    Events.User.SignUp(request.Headers, ref response);
+                    break;
+
+                case "/login" when request.HttpMethod == "POST":
                     Events.User.SignIn(request.Headers,ref response);
                     break;
 
