@@ -29,9 +29,26 @@ namespace Stockr.Backend.Security
             return Tokens.Count(x => x.User.userName == user.userName) != 0;
         }
 
+        public static bool IsLoggedIn(string username, string authtoken)
+        {
+            Login token = Tokens.Find(x => x.User.userName == username);
+
+            return token!=null && Hashing.Match(token.User.hashPassword, authtoken);
+        }
+
         public static User FindUser(string Token)
         {
             return Tokens.First(x => Hashing.Match(x.TokenHash, Token))?.User;
+        }
+
+        public static bool RemoveUser(string username, string authtoken)
+        {
+            Login token = Tokens.Find(x => x.User.userName == username);
+
+            if (token==null || !Hashing.Match(token.TokenHash, authtoken)) return false;
+
+            Tokens.Remove(token);
+            return true;
         }
 
         public static string CreateToken(User user)

@@ -13,6 +13,29 @@ namespace Stockr.Backend.Events
 {
     public static class User
     {
+        public static bool Logout(NameValueCollection Headers, ref Response response)
+        {
+            string token = Headers["authtoken"], uname = Headers["username"];
+            if (token != null && uname != null)
+            {
+                if (LoginTokens.RemoveUser(uname, token))
+                {
+                    response.StatusCode = 200;
+                }
+                else
+                {
+                    response.StatusCode = 401;
+                    response.AddToData("Error", "You are already signed out");
+                }
+            }
+            else
+            {
+                response.StatusCode = 400; 
+                response.AddToData("Error", "username & authtoken must be provided");
+            }
+            return false;
+        }
+
         public static bool SignUp(NameValueCollection Headers, ref Response response)
         {
             string uname = Headers["username"], pword = Headers["password"];
@@ -23,7 +46,7 @@ namespace Stockr.Backend.Events
                     Data.Objects.User user = new Data.Objects.User(uname, pword);
                     Data.Objects.User.Users.Add(user);
 
-                    response.AddToData("AuthToken", LoginTokens.CreateToken(user));
+                    response.AddToData("authtoken", LoginTokens.CreateToken(user));
                     response.StatusCode = 200;
                 }
                 else
@@ -32,7 +55,11 @@ namespace Stockr.Backend.Events
                     response.StatusCode = 401;
                 }
             }
-            else { response.StatusCode = 400; response.AddToData("Error", "username & password must be provided"); }
+            else 
+            { 
+                response.StatusCode = 400;
+                response.AddToData("Error", "username & password must be provided");
+            }
             return false;
         }
 
@@ -44,7 +71,7 @@ namespace Stockr.Backend.Events
                 Data.Objects.User user = Data.Objects.User.Find(uname);
                 if (user != null && Hashing.Match(user.hashPassword, pword))
                 {
-                    response.AddToData("AuthToken",LoginTokens.CreateToken(user));
+                    response.AddToData("authtoken",LoginTokens.CreateToken(user));
                     response.StatusCode = 200;
                     return true;
                 }
@@ -54,7 +81,11 @@ namespace Stockr.Backend.Events
                     response.StatusCode = 401;
                 }
             }
-            else { response.StatusCode = 400; response.AddToData("Error", "username & password must be provided"); }
+            else 
+            { 
+                response.StatusCode = 400; 
+                response.AddToData("Error", "username & password must be provided"); 
+            }
             return false;
         }
     }

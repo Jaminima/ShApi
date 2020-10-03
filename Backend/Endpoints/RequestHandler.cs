@@ -17,7 +17,11 @@ namespace Stockr.Backend.Endpoints
                     break;
 
                 case "/login" when request.HttpMethod == "POST":
-                    Events.User.SignIn(request.Headers,ref response);
+                    Events.User.SignIn(request.Headers, ref response);
+                    break;
+
+                case "/logout" when request.HttpMethod == "DELETE":
+                    Events.User.Logout(request.Headers, ref response);
                     break;
 
                 default:
