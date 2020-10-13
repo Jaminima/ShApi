@@ -2,33 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Reflection;
+using System.Resources;
 using System.Threading.Tasks;
 
 namespace Stockr.Backend.Endpoints
 {
     public static class RequestHandler
     {
+        static MethodInfo[] methodInfos = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).SelectMany(x => x.GetMethods()).Where(x => x.GetCustomAttributes(typeof(Events.WebEvent), false).FirstOrDefault() != null).ToArray();
+
         public static void Handle(HttpListenerRequest request, string Data, ref Response response)
         {
-            switch (request.RawUrl.ToLower())
-            {
-                case "/signup" when request.HttpMethod == "POST":
-                    Events.User.SignUp(request.Headers, ref response);
-                    break;
+            string url = request.RawUrl.ToLower(), method = request.HttpMethod.ToLower();
 
-                case "/login" when request.HttpMethod == "POST":
-                    Events.User.SignIn(request.Headers, ref response);
-                    break;
+            MethodInfo[] tMethod = methodInfos.Where(x => x.GetCustomAttribute<Events.WebEvent>().Equals(url,method)).ToArray();
 
-                case "/logout" when request.HttpMethod == "DELETE":
-                    Events.User.Logout(request.Headers, ref response);
-                    break;
-
-                default:
-                    response.StatusCode = 404;
-                    response.AddToData("Error","Page Not Found");
-                    break;
-            }
+            if (tMethod.Length > 0) tMethod[0].Invoke(null, new object[] { request.Headers, response });
         }
     }
 }

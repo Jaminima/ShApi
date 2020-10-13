@@ -13,6 +13,7 @@ namespace Stockr.Backend.Events
 {
     public static class User
     {
+        [WebEvent("/logout","POST")]
         public static bool Logout(NameValueCollection Headers, ref Response response)
         {
             string token = Headers["authtoken"], uname = Headers["username"];
@@ -36,6 +37,7 @@ namespace Stockr.Backend.Events
             return false;
         }
 
+        [WebEvent("/signup", "POST")]
         public static bool SignUp(NameValueCollection Headers, ref Response response)
         {
             string uname = Headers["username"], pword = Headers["password"];
@@ -63,6 +65,7 @@ namespace Stockr.Backend.Events
             return false;
         }
 
+        [WebEvent("/login", "POST")]
         public static bool SignIn(NameValueCollection Headers, ref Response response)
         {
             string uname = Headers["username"], pword = Headers["password"];

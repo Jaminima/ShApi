@@ -53,6 +53,7 @@
     <Compile Include="Backend\Data\Objects\User.cs" />
     <Compile Include="Backend\Endpoints\RequestHandler.cs" />
     <Compile Include="Backend\Endpoints\Listener.cs" />
+    <Compile Include="Backend\Events\Attribute.cs" />
     <Compile Include="Backend\Events\User.cs" />
     <Compile Include="Backend\Security\Hashing.cs" />
     <Compile Include="Backend\Security\LoginTokens.cs" />

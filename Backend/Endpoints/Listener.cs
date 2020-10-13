@@ -25,6 +25,8 @@ namespace Stockr.Backend.Endpoints
         {
             response.StatusCode = StatusCode;
 
+            response.Headers.Add("Access-Control-Allow-Origin","*");
+
             StreamWriter stream = new StreamWriter(response.OutputStream);
             if (Data != null) stream.Write(JToken.FromObject(Data).ToString());
 
