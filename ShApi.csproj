@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{29866C16-AB82-4EED-AE4A-4474EF158A0A}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Stockr</RootNamespace>
-    <AssemblyName>Stockr</AssemblyName>
+    <RootNamespace>ShApi</RootNamespace>
+    <AssemblyName>ShApi</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

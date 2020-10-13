@@ -1,14 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Stockr.Backend.Data.Objects
+namespace ShApi.Backend.Data.Objects
 {
     public class User
     {
+        #region Fields
+
         public static List<User> Users = new List<Objects.User>();
+
+        public string userName, hashPassword;
+
+        #endregion Fields
+
+        #region Constructors
+
+        public User(string uName, string password)
+        {
+            this.userName = uName;
+            this.hashPassword = Security.Hashing.Hash(password);
+        }
+
+        #endregion Constructors
+
+        #region Methods
 
         public static User Find(string username)
         {
@@ -17,12 +32,6 @@ namespace Stockr.Backend.Data.Objects
             return u[0];
         }
 
-        public string userName, hashPassword;
-
-        public User(string uName, string password)
-        {
-            this.userName = uName;
-            this.hashPassword = Security.Hashing.Hash(password);
-        }
+        #endregion Methods
     }
 }

@@ -1,19 +1,15 @@
-﻿using Newtonsoft.Json.Linq;
-using Stockr.Backend.Data.Objects;
-using Stockr.Backend.Endpoints;
-using Stockr.Backend.Security;
-using System;
-using System.Collections.Generic;
+﻿using ShApi.Backend.Endpoints;
+using ShApi.Backend.Security;
 using System.Collections.Specialized;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 
-namespace Stockr.Backend.Events
+namespace ShApi.Backend.Events
 {
     public static class User
     {
-        [WebEvent("/logout","POST")]
+        #region Methods
+
+        //curl -X POST 'http://localhost:1234/logout' -H 'username: Jaminima' -H 'authtoken: z/xSPobmlTktMBHhfACvOIqEHCB_cpu_' -d ''
+        [WebEvent("/logout", "POST")]
         public static bool Logout(NameValueCollection Headers, ref Response response)
         {
             string token = Headers["authtoken"], uname = Headers["username"];
@@ -31,12 +27,41 @@ namespace Stockr.Backend.Events
             }
             else
             {
-                response.StatusCode = 400; 
+                response.StatusCode = 400;
                 response.AddToData("Error", "username & authtoken must be provided");
             }
             return false;
         }
 
+        //curl -X POST 'http://localhost:1234/login' -H 'username: Jaminima' -H 'password: Jaminima48' -d ''
+        [WebEvent("/login", "POST")]
+        public static bool SignIn(NameValueCollection Headers, ref Response response)
+        {
+            string uname = Headers["username"], pword = Headers["password"];
+            if (uname != null && pword != null)
+            {
+                Data.Objects.User user = Data.Objects.User.Find(uname);
+                if (user != null && Hashing.Match(user.hashPassword, pword))
+                {
+                    response.AddToData("authtoken", LoginTokens.CreateToken(user));
+                    response.StatusCode = 200;
+                    return true;
+                }
+                else
+                {
+                    response.AddToData("Error", "User doesnt exist or password is wrong");
+                    response.StatusCode = 401;
+                }
+            }
+            else
+            {
+                response.StatusCode = 400;
+                response.AddToData("Error", "username & password must be provided");
+            }
+            return false;
+        }
+
+        //curl -X POST 'http://localhost:1234/signup' -H 'username: Jaminima' -H 'password: Jaminima48' -d ''
         [WebEvent("/signup", "POST")]
         public static bool SignUp(NameValueCollection Headers, ref Response response)
         {
@@ -57,39 +82,14 @@ namespace Stockr.Backend.Events
                     response.StatusCode = 401;
                 }
             }
-            else 
-            { 
+            else
+            {
                 response.StatusCode = 400;
                 response.AddToData("Error", "username & password must be provided");
             }
             return false;
         }
 
-        [WebEvent("/login", "POST")]
-        public static bool SignIn(NameValueCollection Headers, ref Response response)
-        {
-            string uname = Headers["username"], pword = Headers["password"];
-            if (uname != null && pword != null)
-            {
-                Data.Objects.User user = Data.Objects.User.Find(uname);
-                if (user != null && Hashing.Match(user.hashPassword, pword))
-                {
-                    response.AddToData("authtoken",LoginTokens.CreateToken(user));
-                    response.StatusCode = 200;
-                    return true;
-                }
-                else
-                {
-                    response.AddToData("Error", "User doesnt exist or password is wrong");
-                    response.StatusCode = 401;
-                }
-            }
-            else 
-            { 
-                response.StatusCode = 400; 
-                response.AddToData("Error", "username & password must be provided"); 
-            }
-            return false;
-        }
+        #endregion Methods
     }
 }

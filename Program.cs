@@ -1,17 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Stockr
+namespace ShApi
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        #region Methods
+
+        private static void Main(string[] args)
         {
             Backend.Endpoints.Listener.Start();
             Console.ReadLine();
         }
+
+        #endregion Methods
     }
 }
