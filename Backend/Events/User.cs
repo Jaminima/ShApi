@@ -43,7 +43,7 @@ namespace ShApi.Backend.Events
                 Data.Objects.User user = Data.Objects.User.Find(uname);
                 if (user != null && Hashing.Match(user.hashPassword, pword))
                 {
-                    response.AddToData("authtoken", LoginTokens.CreateToken(user));
+                    response.AddCookie("authtoken", LoginTokens.CreateToken(user));
                     response.StatusCode = 200;
                     return true;
                 }
@@ -73,7 +73,7 @@ namespace ShApi.Backend.Events
                     Data.Objects.User user = new Data.Objects.User(uname, pword);
                     Data.Objects.User.Users.Add(user);
 
-                    response.AddToData("authtoken", LoginTokens.CreateToken(user));
+                    response.AddCookie("authtoken", LoginTokens.CreateToken(user));
                     response.StatusCode = 200;
                 }
                 else

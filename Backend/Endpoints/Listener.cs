@@ -48,10 +48,16 @@ namespace ShApi.Backend.Endpoints
 
         public JObject Data = JObject.Parse("{'Time':" + DateTime.Now.Ticks + "}");
         public int StatusCode = 500;
+        private CookieCollection cookies = new CookieCollection();
 
         #endregion Fields
 
         #region Methods
+
+        public void AddCookie(string name, string value)
+        {
+            cookies.Add(new Cookie(name,value));
+        }
 
         public void AddObjectToData(string Header, object obj)
         {
@@ -68,6 +74,9 @@ namespace ShApi.Backend.Endpoints
             response.StatusCode = StatusCode;
 
             response.Headers.Add("Access-Control-Allow-Origin", "*");
+
+            response.ContentType = "application/json";
+            response.Cookies = cookies;
 
             StreamWriter stream = new StreamWriter(response.OutputStream);
             if (Data != null) stream.Write(JToken.FromObject(Data).ToString());
