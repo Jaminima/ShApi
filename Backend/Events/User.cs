@@ -1,4 +1,5 @@
-﻿using ShApi.Backend.Endpoints;
+﻿using ShApi.Backend.Data;
+using ShApi.Backend.Endpoints;
 using ShApi.Backend.Security;
 using System.Collections.Specialized;
 
@@ -8,7 +9,7 @@ namespace ShApi.Backend.Events
     {
         #region Methods
 
-        [WebEvent("/account","DELETE")]
+        [WebEvent("/account", "DELETE")]
         public static bool DeleteAccount(NameValueCollection Headers, ref Response response)
         {
             string token = Headers["authtoken"], uname = Headers["username"];
@@ -17,7 +18,7 @@ namespace ShApi.Backend.Events
                 if (LoginTokens.IsLoggedIn(uname, token))
                 {
                     Data.Objects.User user = LoginTokens.FindUserByName(uname);
-                    //user.delete();
+                    MemoryHandler.Users.DeleteMany(x => x.userName == user.userName);
                     response.StatusCode = 200;
                 }
                 else
@@ -97,7 +98,7 @@ namespace ShApi.Backend.Events
                 if (Data.Objects.User.Find(uname) == null)
                 {
                     Data.Objects.User user = new Data.Objects.User(uname, pword);
-                    Data.Objects.User.Users.Add(user);
+                    MemoryHandler.Users.Insert(user);
 
                     response.AddCookie("authtoken", LoginTokens.CreateToken(user));
                     response.StatusCode = 200;
