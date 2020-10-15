@@ -35,7 +35,6 @@ namespace ShApi.Backend.Events
             return false;
         }
 
-        //curl -X POST 'http://localhost:1234/logout' -H 'username: Jaminima' -H 'authtoken: z/xSPobmlTktMBHhfACvOIqEHCB_cpu_' -d ''
         [WebEvent("/logout", "POST")]
         public static bool Logout(NameValueCollection Headers, ref Response response)
         {
@@ -60,7 +59,6 @@ namespace ShApi.Backend.Events
             return false;
         }
 
-        //curl -X POST 'http://localhost:1234/login' -H 'username: Jaminima' -H 'password: Jaminima48' -d ''
         [WebEvent("/login", "POST")]
         public static bool SignIn(NameValueCollection Headers, ref Response response)
         {
@@ -88,7 +86,6 @@ namespace ShApi.Backend.Events
             return false;
         }
 
-        //curl -X POST 'http://localhost:1234/signup' -H 'username: Jaminima' -H 'password: Jaminima48' -d ''
         [WebEvent("/signup", "POST")]
         public static bool SignUp(NameValueCollection Headers, ref Response response)
         {
