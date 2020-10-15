@@ -25,7 +25,6 @@ namespace ShApi.Backend.Endpoints
             MethodInfo[] tMethod = methodInfos.Where(x => x.GetCustomAttribute<Events.WebEvent>().Equals(url, method)).ToArray();
 
             if (tMethod.Length > 0) tMethod[0].Invoke(null, new object[] { request.Headers, response });
-
             else
             {
                 response.StatusCode = 404;

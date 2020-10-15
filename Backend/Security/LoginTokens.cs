@@ -76,7 +76,7 @@ namespace ShApi.Backend.Security
         {
             Login token = Tokens.Find(x => x.User.userName == username);
 
-            return token != null && Hashing.Match(token.User.hashPassword, authtoken);
+            return token != null && Hashing.Match(token.TokenHash, authtoken);
         }
 
         public static bool RemoveUser(string username, string authtoken)

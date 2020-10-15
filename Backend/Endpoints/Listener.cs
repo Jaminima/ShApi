@@ -56,7 +56,7 @@ namespace ShApi.Backend.Endpoints
 
         public void AddCookie(string name, string value)
         {
-            cookies.Add(new Cookie(name,value));
+            cookies.Add(new Cookie(name, value));
         }
 
         public void AddObjectToData(string Header, object obj)
