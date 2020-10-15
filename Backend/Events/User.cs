@@ -8,6 +8,32 @@ namespace ShApi.Backend.Events
     {
         #region Methods
 
+        [WebEvent("/account","DELETE")]
+        public static bool DeleteAccount(NameValueCollection Headers, ref Response response)
+        {
+            string token = Headers["authtoken"], uname = Headers["username"];
+            if (token != null && uname != null)
+            {
+                if (LoginTokens.IsLoggedIn(uname, token))
+                {
+                    Data.Objects.User user = LoginTokens.FindUserByName(uname);
+                    //user.delete();
+                    response.StatusCode = 200;
+                }
+                else
+                {
+                    response.StatusCode = 401;
+                    response.AddToData("Error", "authtoken is not valid");
+                }
+            }
+            else
+            {
+                response.StatusCode = 400;
+                response.AddToData("Error", "username & authtoken must be provided");
+            }
+            return false;
+        }
+
         //curl -X POST 'http://localhost:1234/logout' -H 'username: Jaminima' -H 'authtoken: z/xSPobmlTktMBHhfACvOIqEHCB_cpu_' -d ''
         [WebEvent("/logout", "POST")]
         public static bool Logout(NameValueCollection Headers, ref Response response)

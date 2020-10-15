@@ -62,9 +62,14 @@ namespace ShApi.Backend.Security
             return Token;
         }
 
-        public static User FindUser(string Token)
+        public static User FindUserByToken(string Token)
         {
             return Tokens.First(x => Hashing.Match(x.TokenHash, Token))?.User;
+        }
+
+        public static User FindUserByName(string uname)
+        {
+            return Tokens.First(x => x.User.userName == uname)?.User;
         }
 
         public static bool IsLoggedIn(string username, string authtoken)
