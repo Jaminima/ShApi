@@ -6,6 +6,7 @@
         #region Fields
 
         public string urlPath, method;
+        public bool WebSocket = false;
 
         #endregion Fields
 
@@ -17,13 +18,20 @@
             this.method = Method.ToLower();
         }
 
+        public WebEvent(string urlPath, string Method, bool WebSocket = false)
+        {
+            this.urlPath = urlPath.ToLower();
+            this.method = Method.ToLower();
+            this.WebSocket = WebSocket;
+        }
+
         #endregion Constructors
 
         #region Methods
 
-        public bool Equals(string urlPath, string Method)
+        public bool Equals(string urlPath, string Method, bool WebSocket = false)
         {
-            return urlPath == this.urlPath && Method == this.method;
+            return urlPath.ToLower() == this.urlPath && Method.ToLower() == this.method && WebSocket == this.WebSocket;
         }
 
         #endregion Methods

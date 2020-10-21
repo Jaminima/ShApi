@@ -2,12 +2,19 @@
 using ShApi.Backend.Endpoints;
 using ShApi.Backend.Security;
 using System.Collections.Specialized;
+using System.Net.WebSockets;
 
 namespace ShApi.Backend.Events
 {
     public static class User
     {
         #region Methods
+
+        [WebEvent("/websocket", "Echo", true)]
+        public static void TestWebSocket(WebSocket webSocket, SocketEvent @event, SocketResponse response)
+        {
+            response.AddToData("Text", "AHHHH");
+        }
 
         [WebEvent("/account", "DELETE")]
         public static bool DeleteAccount(NameValueCollection Headers, ref Response response)

@@ -1,9 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.IO;
 using System.Net;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
 namespace ShApi.Backend.Endpoints
 {
@@ -16,8 +13,7 @@ namespace ShApi.Backend.Endpoints
             HttpListenerContext context = listener.EndGetContext(result);
             listener.BeginGetContext(PreHandler, null);
 
-            if (context.Request.IsWebSocketRequest) await RequestHandler.HandleWebsocket(context);
-
+            if (context.Request.IsWebSocketRequest) await SocketHandler.HandleWebsocket(context);
             else
             {
                 StreamReader stream = new StreamReader(context.Request.InputStream);
@@ -47,51 +43,5 @@ namespace ShApi.Backend.Endpoints
             listener.Start();
             listener.BeginGetContext(PreHandler, null);
         }
-    }
-
-    public class Response
-    {
-        #region Fields
-
-        public JObject Data = JObject.Parse("{'Time':" + DateTime.Now.Ticks + "}");
-        public int StatusCode = 500;
-        private CookieCollection cookies = new CookieCollection();
-
-        #endregion Fields
-
-        #region Methods
-
-        public void AddCookie(string name, string value)
-        {
-            cookies.Add(new Cookie(name, value));
-        }
-
-        public void AddObjectToData(string Header, object obj)
-        {
-            Data.Property("Time").AddAfterSelf(new JProperty(Header, JToken.FromObject(obj).ToString()));
-        }
-
-        public void AddToData(string Header, object stringable)
-        {
-            Data.Property("Time").AddAfterSelf(new JProperty(Header, stringable.ToString()));
-        }
-
-        public void Send(HttpListenerResponse response)
-        {
-            response.StatusCode = StatusCode;
-
-            response.Headers.Add("Access-Control-Allow-Origin", "*");
-
-            response.ContentType = "application/json";
-            response.Cookies = cookies;
-
-            StreamWriter stream = new StreamWriter(response.OutputStream);
-            if (Data != null) stream.Write(JToken.FromObject(Data).ToString());
-
-            stream.Flush();
-            stream.Close();
-        }
-
-        #endregion Methods
     }
 }
