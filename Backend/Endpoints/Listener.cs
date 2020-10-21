@@ -2,6 +2,8 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace ShApi.Backend.Endpoints
 {
@@ -9,19 +11,24 @@ namespace ShApi.Backend.Endpoints
     {
         #region Methods
 
-        private static void PreHandler(IAsyncResult result)
+        private static async void PreHandler(IAsyncResult result)
         {
             HttpListenerContext context = listener.EndGetContext(result);
             listener.BeginGetContext(PreHandler, null);
 
-            StreamReader stream = new StreamReader(context.Request.InputStream);
-            string streamString = stream.ReadToEnd();
+            if (context.Request.IsWebSocketRequest) await RequestHandler.HandleWebsocket(context);
 
-            Response response = new Response();
+            else
+            {
+                StreamReader stream = new StreamReader(context.Request.InputStream);
+                string streamString = stream.ReadToEnd();
 
-            RequestHandler.Handle(context.Request, streamString, ref response);
+                Response response = new Response();
 
-            response.Send(context.Response);
+                RequestHandler.Handle(context.Request, streamString, ref response);
+
+                response.Send(context.Response);
+            }
         }
 
         #endregion Methods
